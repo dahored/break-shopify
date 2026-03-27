@@ -1,0 +1,534 @@
+{% comment %}
+  Product Pricing Section - Launch price CTA with discount card
+  Single-product store: uses product picker or page product
+{% endcomment %}
+
+{%- assign p = section.settings.product | default: product -%}
+{%- assign current_variant = p.selected_or_first_available_variant -%}
+
+{%- comment -%} Calculate discount automatically from product prices {%- endcomment -%}
+{%- assign has_discount = false -%}
+{%- assign discount_pct = 0 -%}
+{%- if p and current_variant.compare_at_price and current_variant.compare_at_price > current_variant.price -%}
+  {%- assign has_discount = true -%}
+  {%- assign savings = current_variant.compare_at_price | minus: current_variant.price -%}
+  {%- assign savings_x100 = savings | times: 100 -%}
+  {%- assign discount_pct = savings_x100 | divided_by: current_variant.compare_at_price -%}
+{%- endif -%}
+
+<section class="product-pricing full-width" id="precio">
+  <div class="product-pricing__container">
+
+    {%- if section.settings.overline != blank -%}
+      <span class="product-pricing__overline">{{ section.settings.overline }}</span>
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank -%}
+      <h2 class="product-pricing__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    <div class="product-pricing__card">
+      {%- if has_discount -%}
+        {%- if section.settings.discount_badge_text != blank -%}
+          <span class="product-pricing__discount-badge">{{ section.settings.discount_badge_text }}</span>
+        {%- else -%}
+          <span class="product-pricing__discount-badge">{{ discount_pct }}% OFF</span>
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- if has_discount and section.settings.show_compare_price -%}
+        <div class="product-pricing__before">
+          <span class="product-pricing__before-label">{{ section.settings.before_label | default: 'ANTES' }}</span>
+          <span class="product-pricing__before-price">
+            <s>{{ current_variant.compare_at_price | money }}</s>
+          </span>
+        </div>
+        <hr class="product-pricing__divider">
+      {%- endif -%}
+
+      {%- if p -%}
+        <div class="product-pricing__now">
+          <span class="product-pricing__now-label">{{ section.settings.now_label | default: 'AHORA' }}</span>
+          <span class="product-pricing__now-price">
+            <span class="product-pricing__now-amount">{{ current_variant.price | money }}</span>
+          </span>
+          <span class="product-pricing__final">{{ section.settings.final_label | default: 'Precio final' }}</span>
+          {%- if section.settings.installments_text != blank -%}
+            <span class="product-pricing__installments">({{ section.settings.installments_text }})</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="product-pricing__badges">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'badge' -%}
+            <div class="product-pricing__badge-item" {{ block.shopify_attributes }}>
+              {%- case block.settings.icon -%}
+                {%- when 'shipping' -%}
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                {%- when 'guarantee' -%}
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                {%- when 'gift' -%}
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+                {%- when 'signature' -%}
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                {%- when 'star' -%}
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                {%- when 'lock' -%}
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                {%- else -%}
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg>
+              {%- endcase -%}
+              <span>{{ block.settings.text }}</span>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if p -%}
+      {% form 'product', p, class: 'product-pricing__form' %}
+        {%- if p.variants.size > 1 -%}
+          <select name="id" class="product-pricing__variant-select">
+            {%- for variant in p.variants -%}
+              <option value="{{ variant.id }}" {% if variant == current_variant %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>
+                {{ variant.title }}{% unless variant.available %} - Agotado{% endunless %}
+              </option>
+            {%- endfor -%}
+          </select>
+        {%- else -%}
+          <input type="hidden" name="id" value="{{ current_variant.id }}">
+        {%- endif -%}
+        <input type="hidden" name="quantity" value="1">
+        <button type="submit" class="product-pricing__cta" {% unless current_variant.available %}disabled{% endunless %}>
+          {%- if current_variant.available -%}
+            {{ section.settings.button_text | default: 'COMPRAR AHORA' }}
+          {%- else -%}
+            AGOTADO
+          {%- endif -%}
+        </button>
+      {% endform %}
+    {%- else -%}
+      <a href="#" class="product-pricing__cta">{{ section.settings.button_text | default: 'COMPRAR AHORA' }}</a>
+    {%- endif -%}
+
+    {%- if section.settings.urgency_text != blank -%}
+      <p class="product-pricing__urgency">{{ section.settings.urgency_text }}</p>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% stylesheet %}
+  .product-pricing {
+    background: radial-gradient(ellipse at center, #1a1510 0%, #0d0d0d 70%);
+    color: #f5f0e8;
+  }
+
+  .product-pricing__container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+    text-align: center;
+  }
+
+  /* Overline */
+  .product-pricing__overline {
+    display: inline-block;
+    font-family: "Fira Code", monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #c9a84c;
+    margin-bottom: 1rem;
+  }
+
+  /* Heading */
+  .product-pricing__heading {
+    font-family: "Fira Code", monospace;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 700;
+    line-height: 1.3;
+    color: #f5f0e8;
+    margin-bottom: 2.5rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Price card */
+  .product-pricing__card {
+    position: relative;
+    border: 1px solid #2a2520;
+    border-radius: 12px;
+    padding: 2.5rem 3rem;
+    margin: 0 auto 2.5rem;
+    max-width: 520px;
+    background: rgba(13, 13, 13, 0.6);
+  }
+
+  /* Discount badge */
+  .product-pricing__discount-badge {
+    position: absolute;
+    top: -0.75rem;
+    right: 1.5rem;
+    background: #c0392b;
+    color: #fff;
+    font-family: "Fira Code", monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 0.75rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  /* Before price */
+  .product-pricing__before {
+    margin-bottom: 1rem;
+  }
+
+  .product-pricing__before-label {
+    display: block;
+    font-family: "Fira Code", monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 0.5rem;
+  }
+
+  .product-pricing__before-price {
+    font-family: "Fira Code", monospace;
+    font-size: 1.5rem;
+    color: #666;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .product-pricing__before-price s {
+    text-decoration: line-through;
+  }
+
+  .product-pricing__currency {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  /* Divider */
+  .product-pricing__divider {
+    border: none;
+    border-top: 1px solid #2a2520;
+    margin: 1.25rem auto;
+    width: 60px;
+  }
+
+  /* Now price */
+  .product-pricing__now {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .product-pricing__now-label {
+    font-family: "Fira Code", monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #a09888;
+    margin-bottom: 0.5rem;
+  }
+
+  .product-pricing__now-price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .product-pricing__now-symbol {
+    font-family: "Fira Code", monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #c9a84c;
+  }
+
+  .product-pricing__now-amount {
+    font-family: "Fira Code", monospace;
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-weight: 700;
+    color: #c9a84c;
+    line-height: 1;
+  }
+
+  .product-pricing__currency--now {
+    font-size: 1rem;
+    color: #a09888;
+  }
+
+  .product-pricing__final {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+  }
+
+  .product-pricing__installments {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    color: #666;
+  }
+
+  /* Badges row */
+  .product-pricing__badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .product-pricing__badge-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    color: #a09888;
+    white-space: nowrap;
+  }
+
+  .product-pricing__badge-item svg {
+    color: #c9a84c;
+    flex-shrink: 0;
+  }
+
+  /* Form */
+  .product-pricing__form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .product-pricing__variant-select {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8rem;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #2a2520;
+    border-radius: 8px;
+    background: #111;
+    color: #f5f0e8;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  /* CTA Button */
+  .product-pricing__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.1rem 3.5rem;
+    background: #c9a84c;
+    color: #0d0d0d;
+    font-family: "Fira Code", monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    min-width: 280px;
+  }
+
+  .product-pricing__cta:hover {
+    background: #d4b35a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(201, 168, 76, 0.25);
+  }
+
+  .product-pricing__cta:active {
+    transform: translateY(0);
+  }
+
+  .product-pricing__cta:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Urgency */
+  .product-pricing__urgency {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.7rem;
+    font-style: italic;
+    color: #666;
+    margin-top: 1.5rem;
+    letter-spacing: 0.02em;
+  }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .product-pricing__container {
+      padding: 3.5rem 1.25rem;
+    }
+
+    .product-pricing__card {
+      padding: 2rem 1.5rem;
+    }
+
+    .product-pricing__badges {
+      gap: 1rem 1.25rem;
+    }
+
+    .product-pricing__badge-item {
+      font-size: 0.7rem;
+    }
+
+    .product-pricing__cta {
+      width: 100%;
+      min-width: unset;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Producto - Precio",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Producto"
+    },
+    {
+      "type": "header",
+      "content": "Encabezado"
+    },
+    {
+      "type": "text",
+      "id": "overline",
+      "label": "Texto superior",
+      "default": "Precio de lanzamiento"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Título",
+      "default": "Asegura tu copia antes de que se agoten"
+    },
+    {
+      "type": "header",
+      "content": "Precio",
+      "info": "El precio y descuento se cargan automáticamente del producto. Si el producto tiene un 'Precio de comparación' mayor al precio, se muestra el descuento."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_compare_price",
+      "label": "Mostrar precio anterior (tachado)",
+      "default": true,
+      "info": "Solo se muestra si el producto tiene precio de comparación."
+    },
+    {
+      "type": "text",
+      "id": "discount_badge_text",
+      "label": "Texto del badge (opcional)",
+      "info": "Dejar vacío para mostrar el porcentaje calculado (ej. '28% OFF'). Puedes poner algo personalizado como 'LANZAMIENTO'."
+    },
+    {
+      "type": "text",
+      "id": "before_label",
+      "label": "Label precio anterior",
+      "default": "ANTES"
+    },
+    {
+      "type": "text",
+      "id": "now_label",
+      "label": "Label precio actual",
+      "default": "AHORA"
+    },
+    {
+      "type": "text",
+      "id": "final_label",
+      "label": "Texto debajo del precio",
+      "default": "Precio final"
+    },
+    {
+      "type": "text",
+      "id": "installments_text",
+      "label": "Texto de cuotas",
+      "info": "Ej: 'o 3 cuotas de $21.634 sin interés'. Dejar vacío para ocultar."
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Texto del botón",
+      "default": "COMPRAR AHORA"
+    },
+    {
+      "type": "text",
+      "id": "urgency_text",
+      "label": "Texto de urgencia",
+      "default": "Solo quedan 98 copias · Esta oferta puede terminar en cualquier momento",
+      "info": "Dejar vacío para ocultar"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Badge",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Ícono",
+          "options": [
+            { "value": "shipping", "label": "Envío" },
+            { "value": "guarantee", "label": "Garantía" },
+            { "value": "gift", "label": "Regalo/Bonos" },
+            { "value": "signature", "label": "Firma" },
+            { "value": "star", "label": "Estrella" },
+            { "value": "lock", "label": "Seguridad" },
+            { "value": "check", "label": "Check" }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texto",
+          "default": "Envío gratis"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Producto - Precio",
+      "blocks": [
+        { "type": "badge", "settings": { "icon": "shipping", "text": "Envío gratis" } },
+        { "type": "badge", "settings": { "icon": "guarantee", "text": "Garantía" } },
+        { "type": "badge", "settings": { "icon": "gift", "text": "6 bonos transformadores" } },
+        { "type": "badge", "settings": { "icon": "signature", "text": "Firma del autor" } }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

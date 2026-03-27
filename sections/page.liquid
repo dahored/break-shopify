@@ -5,9 +5,90 @@
   https://shopify.dev/docs/storefronts/themes/architecture/templates/page
 {% endcomment %}
 
-<h1>{{ page.title }}</h1>
+<section class="page-content full-width">
+  <div class="page-content__container">
+    <h1 class="page-content__title">{{ page.title }}</h1>
+    <div class="page-content__body">
+      {{ page.content }}
+    </div>
+  </div>
+</section>
 
-{{ page.content }}
+{% stylesheet %}
+  .page-content {
+    background-color: var(--color-brand-bg, #0d0d0d);
+    color: var(--color-brand-fg, #f5f0e8);
+  }
+
+  .page-content__container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  .page-content__title {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-weight: 700;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .page-content__body {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--color-brand-fg-muted, #a09888);
+  }
+
+  .page-content__body h2,
+  .page-content__body h3,
+  .page-content__body h4 {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    color: var(--color-brand-fg, #f5f0e8);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .page-content__body p + p {
+    margin-top: 1rem;
+  }
+
+  .page-content__body a {
+    color: var(--color-brand-gold, #c9a84c);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: opacity 0.2s ease;
+  }
+
+  .page-content__body a:hover {
+    opacity: 0.8;
+  }
+
+  .page-content__body ul,
+  .page-content__body ol {
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .page-content__body li {
+    margin-bottom: 0.5rem;
+  }
+
+  .page-content__body img {
+    border-radius: 12px;
+    margin: 2rem 0;
+  }
+
+  .page-content__body blockquote {
+    border-left: 3px solid var(--color-brand-gold, #c9a84c);
+    padding-left: 1.5rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #666;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {

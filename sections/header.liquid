@@ -1,66 +1,370 @@
-<header>
-  <h2 class="header__title">
-    {{ shop.name | link_to: routes.root_url }}
-  </h2>
-
-  <div class="header__menu">
-    {% for link in section.settings.menu.links %}
-      {{ link.title | link_to: link.url }}
-    {% endfor %}
-  </div>
-
-  <div class="header__icons">
-    {% if shop.customer_accounts_enabled %}
-      <shopify-account menu="{{ section.settings.customer_account_menu }}">
-        {{ 'icon-account.svg' | inline_asset_content }}
-      </shopify-account>
-    {% endif %}
-
-    <a href="{{ routes.cart_url }}">
-      {% if cart.item_count > 0 %}
-        <sup>{{ cart.item_count }}</sup>
-      {% endif %}
-
-      {{ 'icon-cart.svg' | inline_asset_content }}
+<header class="header full-width">
+  <div class="header__inner">
+    <a href="{{ routes.root_url }}" class="header__logo" style="--logo-max-w: {{ section.settings.logo_max_width | default: 160 }}px">
+      {%- if section.settings.logo != blank -%}
+        {% render 'image', image: section.settings.logo, class: 'header__logo-img header__logo-img--full' %}
+      {%- endif -%}
+      {%- if section.settings.logo_icon != blank -%}
+        {% render 'image', image: section.settings.logo_icon, class: 'header__logo-img header__logo-img--icon' %}
+      {%- endif -%}
+      {%- if section.settings.logo == blank and section.settings.logo_icon == blank -%}
+        <span class="header__logo-text">{{ shop.name }}</span>
+      {%- endif -%}
     </a>
+
+    <nav class="header__nav" id="HeaderNav">
+      {% for link in section.settings.menu.links %}
+        <a href="{{ link.url }}" class="header__nav-link {% if link.active %}header__nav-link--active{% endif %}">
+          {{ link.title }}
+        </a>
+      {% endfor %}
+    </nav>
+
+    <div class="header__actions">
+      {%- if section.settings.cta_text != blank -%}
+        <a href="{{ section.settings.cta_url | default: '/#comprar' }}" class="header__cta">
+          {{ section.settings.cta_text }}
+        </a>
+      {%- endif -%}
+
+      <a href="{{ routes.cart_url }}" class="header__action-btn header__cart">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        {% if cart.item_count > 0 %}
+          <span class="header__cart-count">{{ cart.item_count }}</span>
+        {% endif %}
+      </a>
+
+      <button class="header__mobile-toggle" id="MobileMenuToggle" aria-label="Menú">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
   </div>
+
+  <nav class="header__mobile-nav" id="MobileNav">
+    {% for link in section.settings.menu.links %}
+      <a href="{{ link.url }}" class="header__mobile-link {% if link.active %}header__mobile-link--active{% endif %}">
+        {{ link.title }}
+      </a>
+    {% endfor %}
+    {%- if section.settings.cta_text != blank -%}
+      <a href="{{ section.settings.cta_url | default: '/#comprar' }}" class="header__mobile-cta">
+        {{ section.settings.cta_text }}
+      </a>
+    {%- endif -%}
+  </nav>
 </header>
 
 {% stylesheet %}
-  header {
-    height: 5rem;
+  .header {
+    background-color: #0d0d0d;
+    border-bottom: 1px solid #1a1a1a;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background-color: rgba(13, 13, 13, 0.92);
+  }
+
+  .header__inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: 4.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
   }
-  header a {
-    position: relative;
+
+  /* Logo */
+  .header__logo {
     text-decoration: none;
-    color: var(--color-foreground);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .header__logo-img {
+    height: auto;
+    width: auto;
+    max-height: 40px;
+  }
+
+  .header__logo-img--full {
+    max-width: var(--logo-max-w, 160px);
+  }
+
+  .header__logo-img--icon {
+    display: none;
+    max-height: 32px;
+  }
+
+  .header__logo-text {
+    font-family: "Fira Code", monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #c9a84c;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* Nav */
+  .header__nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .header__nav-link {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #a09888;
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.2s ease;
+    position: relative;
+    padding: 4px 0;
+  }
+
+  .header__nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background-color: #c9a84c;
+    transition: width 0.3s ease;
+  }
+
+  .header__nav-link:hover,
+  .header__nav-link--active {
+    color: #f5f0e8;
+  }
+
+  .header__nav-link:hover::after,
+  .header__nav-link--active::after {
+    width: 100%;
+  }
+
+  /* Actions */
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .header__cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1.25rem;
+    background-color: #c9a84c;
+    color: #0d0d0d;
+    font-family: "Fira Code", monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .header__cta:hover {
+    background-color: #d4b35a;
+    transform: translateY(-1px);
+  }
+
+  .header__action-btn {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    color: #a09888;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    position: relative;
   }
-  header a sup {
+
+  .header__action-btn:hover {
+    color: #f5f0e8;
+    background: #1a1a1a;
+  }
+
+  .header__cart {
+    position: relative;
+  }
+
+  .header__cart-count {
     position: absolute;
-    left: 100%;
-    overflow: hidden;
-    max-width: var(--page-margin);
-  }
-  header svg {
-    width: 2rem;
-  }
-  header .header__menu,
-  header .header__icons {
+    top: 4px;
+    right: 4px;
+    width: 16px;
+    height: 16px;
+    background-color: #c9a84c;
+    color: #0d0d0d;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    border-radius: 50%;
     display: flex;
-    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  /* Mobile toggle */
+  .header__mobile-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    color: #a09888;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .header__mobile-toggle:hover {
+    color: #f5f0e8;
+    background: #1a1a1a;
+  }
+
+  /* Mobile nav */
+  .header__mobile-nav {
+    display: none;
+    flex-direction: column;
+    padding: 0 2rem 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 0;
+    border-top: 1px solid #1a1a1a;
+  }
+
+  .header__mobile-nav.is-open {
+    display: flex;
+  }
+
+  .header__mobile-link {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #a09888;
+    text-decoration: none;
+    padding: 0.875rem 0;
+    border-bottom: 1px solid #1a1a1a;
+    letter-spacing: 0.04em;
+    transition: color 0.2s ease;
+  }
+
+  .header__mobile-link:hover,
+  .header__mobile-link--active {
+    color: #c9a84c;
+  }
+
+  .header__mobile-cta {
+    display: block;
+    text-align: center;
+    padding: 0.875rem 1.5rem;
+    margin-top: 1rem;
+    background-color: #c9a84c;
+    color: #0d0d0d;
+    font-family: "Fira Code", monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+  }
+
+  .header__mobile-cta:hover {
+    background-color: #d4b35a;
+  }
+
+  @media (max-width: 768px) {
+    .header__nav {
+      display: none;
+    }
+
+    .header__mobile-toggle {
+      display: flex;
+    }
+
+    .header__logo-img--full {
+      display: none;
+    }
+
+    .header__logo-img--icon {
+      display: block;
+    }
+
+    .header__inner {
+      padding: 0 1.25rem;
+    }
+
+    .header__mobile-nav {
+      padding: 0 1.25rem 1.5rem;
+    }
   }
 {% endstylesheet %}
+
+{% javascript %}
+  (function() {
+    const toggle = document.getElementById('MobileMenuToggle');
+    const nav = document.getElementById('MobileNav');
+    if (!toggle || !nav) return;
+
+    toggle.addEventListener('click', function() {
+      nav.classList.toggle('is-open');
+    });
+  })();
+{% endjavascript %}
 
 {% schema %}
 {
   "name": "t:general.header",
   "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo principal"
+    },
+    {
+      "type": "range",
+      "id": "logo_max_width",
+      "label": "Ancho máximo del logo",
+      "min": 60,
+      "max": 260,
+      "step": 10,
+      "default": 160,
+      "unit": "px"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_icon",
+      "label": "Logo ícono (mobile)"
+    },
+    {
+      "type": "header",
+      "content": "Navegación"
+    },
     {
       "type": "link_list",
       "id": "menu",
@@ -71,6 +375,21 @@
       "id": "customer_account_menu",
       "label": "t:labels.customer_account_menu",
       "default": "customer-account-main-menu"
+    },
+    {
+      "type": "header",
+      "content": "Botón CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Texto del botón",
+      "default": "Comprar"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "URL del botón"
     }
   ]
 }

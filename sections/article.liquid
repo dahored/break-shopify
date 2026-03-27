@@ -1,64 +1,242 @@
 {% comment %}
   This section is used in the article template to render the article page, which
   displays the full content of the blog post and can optionally include a
-  comments section for customers (not shown in this example).
+  comments section for customers.
 
   https://shopify.dev/docs/storefronts/themes/architecture/templates/article
 {% endcomment %}
 
-{% if article.image %}
-  {{ article.image | image_url: width: 1000 | image_tag }}
-{% endif %}
+<section class="article-page full-width">
+  <div class="article-page__container">
+    {% if article.image %}
+      <div class="article-page__hero">
+        {{ article.image | image_url: width: 1200 | image_tag: class: 'article-page__hero-img' }}
+      </div>
+    {% endif %}
 
-<h1>{{ article.title }}</h1>
+    <h1 class="article-page__title">{{ article.title }}</h1>
 
-{% assign date = article.published_at | time_tag: format: 'date' %}
-<p>{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
+    {% assign date = article.published_at | time_tag: format: 'date' %}
+    <p class="article-page__meta">{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
 
-{{ article.content }}
+    <div class="article-page__content">
+      {{ article.content }}
+    </div>
 
-{% if blog.comments_enabled? %}
-  <h2>{{ 'blog.article_comments' | t }}</h2>
+    {% if blog.comments_enabled? %}
+      <div class="article-page__comments" id="comments">
+        <h2 class="article-page__comments-title">{{ 'blog.article_comments' | t }}</h2>
 
-  <div id="comments">
-    {% paginate article.comments by 10 %}
-      {% for comment in article.comments %}
-        <div>
-          <p>{{ comment.author }}</p>
-          <p>
-            {{- comment.created_at | time_tag: format: 'date' -}}
-          </p>
-          <p>{{ comment.content }}</p>
-        </div>
-      {% endfor %}
+        {% paginate article.comments by 10 %}
+          {% for comment in article.comments %}
+            <div class="article-comment">
+              <div class="article-comment__header">
+                <span class="article-comment__author">{{ comment.author }}</span>
+                <span class="article-comment__date">{{ comment.created_at | time_tag: format: 'date' }}</span>
+              </div>
+              <p class="article-comment__body">{{ comment.content }}</p>
+            </div>
+          {% endfor %}
 
-      {{ paginate | default_pagination: anchor: 'comments' }}
-    {% endpaginate %}
+          {{ paginate | default_pagination: anchor: 'comments' }}
+        {% endpaginate %}
+
+        {% form 'new_comment', article %}
+          <div class="article-comment-form">
+            <h3 class="article-comment-form__title">{{ 'blog.comment_form_title' | t }}</h3>
+
+            {{ form.errors | default_errors }}
+
+            <div class="article-comment-form__field">
+              <label for="author">{{ 'blog.comment_form_name' | t }}</label>
+              <input type="text" name="comment[author]" id="author" value="{{ form.author }}" required>
+            </div>
+
+            <div class="article-comment-form__field">
+              <label for="email">{{ 'blog.comment_form_email' | t }}</label>
+              <input type="email" name="comment[email]" id="email" value="{{ form.email }}" required>
+            </div>
+
+            <div class="article-comment-form__field">
+              <label for="body">{{ 'blog.comment_form_body' | t }}</label>
+              <textarea name="comment[body]" id="body" rows="5" required>{{ form.body }}</textarea>
+            </div>
+
+            <input type="submit" value="{{ 'blog.comment_form_submit' | t }}" class="article-comment-form__submit">
+          </div>
+        {% endform %}
+      </div>
+    {% endif %}
   </div>
+</section>
 
-  {% form 'new_comment', article %}
-    <h2>{{ 'blog.comment_form_title' | t }}</h2>
+{% stylesheet %}
+  .article-page {
+    background-color: var(--color-brand-bg, #0d0d0d);
+    color: var(--color-brand-fg, #f5f0e8);
+  }
 
-    {{ form.errors | default_errors }}
+  .article-page__container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
 
-    <div>
-      <label for="author">{{ 'blog.comment_form_name' | t }}</label>
-      <input type="text" name="comment[author]" id="author" value="{{ form.author }}" required>
-    </div>
+  .article-page__hero {
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+  }
 
-    <div>
-      <label for="email">{{ 'blog.comment_form_email' | t }}</label>
-      <input type="email" name="comment[email]" id="email" value="{{ form.email }}" required>
-    </div>
+  .article-page__hero-img {
+    width: 100%;
+    height: auto;
+  }
 
-    <div>
-      <label for="body">{{ 'blog.comment_form_body' | t }}</label>
-      <textarea name="comment[body]" id="body" required>{{ form.body }}</textarea>
-    </div>
+  .article-page__title {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+  }
 
-    <input type="submit" value="{{ 'blog.comment_form_submit' | t }}">
-  {% endform %}
-{% endif %}
+  .article-page__meta {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.8rem;
+    color: var(--color-brand-fg-muted, #a09888);
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .article-page__content {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--color-brand-fg-muted, #a09888);
+  }
+
+  .article-page__content h2,
+  .article-page__content h3 {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    color: var(--color-brand-fg, #f5f0e8);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .article-page__content p + p { margin-top: 1rem; }
+  .article-page__content a { color: var(--color-brand-gold, #c9a84c); }
+  .article-page__content img { border-radius: 12px; margin: 1.5rem 0; }
+
+  /* Comments */
+  .article-page__comments {
+    margin-top: 3rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid #1a1a1a;
+  }
+
+  .article-page__comments-title {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .article-comment {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .article-comment__header {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+  }
+
+  .article-comment__author {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .article-comment__date {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.75rem;
+    color: #555;
+  }
+
+  .article-comment__body {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.875rem;
+    color: var(--color-brand-fg-muted, #a09888);
+    line-height: 1.6;
+  }
+
+  /* Comment form */
+  .article-comment-form {
+    margin-top: 2.5rem;
+  }
+
+  .article-comment-form__title {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .article-comment-form__field {
+    margin-bottom: 1.25rem;
+  }
+
+  .article-comment-form__field label {
+    display: block;
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.75rem;
+    color: var(--color-brand-fg-muted, #a09888);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .article-comment-form__field input,
+  .article-comment-form__field textarea {
+    width: 100%;
+    padding: 12px 14px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: var(--color-brand-fg, #f5f0e8);
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.9rem;
+    border-radius: 8px;
+    transition: border-color 0.2s ease;
+  }
+
+  .article-comment-form__field input:focus,
+  .article-comment-form__field textarea:focus {
+    outline: none;
+    border-color: var(--color-brand-gold, #c9a84c);
+  }
+
+  .article-comment-form__submit {
+    padding: 12px 28px;
+    background-color: var(--color-brand-gold, #c9a84c);
+    color: #0d0d0d;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .article-comment-form__submit:hover {
+    background-color: var(--color-brand-gold-hover, #d4b35a);
+  }
+{% endstylesheet %}
 
 {% schema %}
 {

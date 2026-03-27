@@ -5,15 +5,77 @@
   https://shopify.dev/docs/storefronts/themes/architecture/templates/404
 {% endcomment %}
 
-<h1>{{ '404.title' | t }}</h1>
+<section class="page-404 full-width">
+  <div class="page-404__container">
+    <span class="page-404__code">404</span>
+    <h1 class="page-404__title">{{ '404.title' | t }}</h1>
+    <p class="page-404__message">{{ '404.not_found' | t }}</p>
+    <a href="{{ routes.all_products_collection_url }}" class="page-404__btn">
+      {{ '404.back_to_shopping' | t }}
+    </a>
+  </div>
+</section>
 
-<p>
-  {{ '404.not_found' | t }}
-</p>
+{% stylesheet %}
+  .page-404 {
+    background-color: var(--color-brand-bg, #0d0d0d);
+    color: var(--color-brand-fg, #f5f0e8);
+  }
 
-<a href="{{ routes.all_products_collection_url }}">
-  {{ '404.back_to_shopping' | t }}
-</a>
+  .page-404__container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 8rem 2rem;
+    text-align: center;
+  }
+
+  .page-404__code {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: clamp(5rem, 12vw, 10rem);
+    font-weight: 700;
+    color: var(--color-brand-gold, #c9a84c);
+    opacity: 0.2;
+    display: block;
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .page-404__title {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .page-404__message {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.95rem;
+    color: var(--color-brand-fg-muted, #a09888);
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+  }
+
+  .page-404__btn {
+    display: inline-block;
+    padding: 14px 32px;
+    background-color: var(--color-brand-gold, #c9a84c);
+    color: #0d0d0d;
+    text-decoration: none;
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .page-404__btn:hover {
+    background-color: var(--color-brand-gold-hover, #d4b35a);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(201, 168, 76, 0.25);
+  }
+{% endstylesheet %}
 
 {% schema %}
 {

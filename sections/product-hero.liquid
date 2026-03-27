@@ -1,0 +1,685 @@
+{% comment %}
+  Product Hero Section - Modern sales-oriented product display
+  Features: Image gallery, product info, variant selector, add-to-cart
+  Works on product pages (uses page product) and index (uses product picker)
+{% endcomment %}
+
+{%- assign p = section.settings.product | default: product -%}
+
+<section class="product-hero full-width" id="producto" data-section-id="{{ section.id }}">
+  {%- if section.settings.show_announcement_bar and section.settings.announcement_text != blank -%}
+    <div class="product-hero__announcement">
+      <div class="product-hero__announcement-track">
+        {%- for i in (1..8) -%}
+          <span>{{ section.settings.announcement_text }}</span>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="product-hero__container">
+    <div class="product-hero__gallery">
+      <div class="product-hero__main-image" id="MainImage-{{ section.id }}" style="--hero-img-fit: {{ section.settings.image_fit | default: 'contain' }}; --hero-img-ratio: {{ section.settings.image_ratio | default: 'auto' }}; --hero-img-bg: {{ section.settings.image_bg | default: '#0d0d0d' }}">
+        {%- if p.featured_image -%}
+          <img
+            src="{{ p.featured_image | image_url: width: 900 }}"
+            alt="{{ p.featured_image.alt | escape }}"
+            class="product-hero__img"
+            loading="eager"
+          >
+        {%- else -%}
+          <div class="product-hero__placeholder">
+            {{ 'product-1' | placeholder_svg_tag }}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if p.images.size > 1 -%}
+        <div class="product-hero__thumbnails">
+          {%- for image in p.images -%}
+            <button
+              class="product-hero__thumb {% if forloop.first %}product-hero__thumb--active{% endif %}"
+              data-image-index="{{ forloop.index0 }}"
+              data-image-url="{{ image | image_url: width: 800 }}"
+              aria-label="Ver imagen {{ forloop.index }}"
+            >
+              {% render 'image', image: image, class: 'product-hero__thumb-img' %}
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="product-hero__info">
+      {%- if section.settings.show_badge and section.settings.badge_text != blank -%}
+        <span class="product-hero__badge">{{ section.settings.badge_text }}</span>
+      {%- endif -%}
+
+      <h1 class="product-hero__title">{{ p.title }}</h1>
+
+      {%- if section.settings.subtitle != blank -%}
+        <p class="product-hero__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+
+      {%- if p -%}
+        {%- assign current_variant = p.selected_or_first_available_variant -%}
+
+        <div class="product-hero__price">
+          {%- if current_variant.compare_at_price > current_variant.price -%}
+            <span class="product-hero__price-compare">{{ current_variant.compare_at_price | money }}</span>
+          {%- endif -%}
+          <span class="product-hero__price-current">{{ current_variant.price | money }}</span>
+          {%- if current_variant.compare_at_price > current_variant.price -%}
+            {%- assign discount = current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | round -%}
+            <span class="product-hero__price-discount">-{{ discount }}%</span>
+          {%- endif -%}
+        </div>
+
+        {%- if section.settings.installments_text != blank -%}
+          <p class="product-hero__installments">{{ section.settings.installments_text }}</p>
+        {%- endif -%}
+
+        {% form 'product', p, class: 'product-hero__form' %}
+          {%- if p.variants.size > 1 -%}
+            <div class="product-hero__variants">
+              <label for="ProductVariant-{{ section.id }}" class="product-hero__label">{{ section.settings.variant_label | default: 'Edición' }}</label>
+              <select name="id" id="ProductVariant-{{ section.id }}" class="product-hero__select">
+                {%- for variant in p.variants -%}
+                  <option
+                    value="{{ variant.id }}"
+                    {% if variant == current_variant %}selected="selected"{% endif %}
+                    {% unless variant.available %}disabled{% endunless %}
+                  >
+                    {{ variant.title }}{% unless variant.available %} - Agotado{% endunless %}
+                  </option>
+                {%- endfor -%}
+              </select>
+            </div>
+          {%- else -%}
+            <input type="hidden" name="id" value="{{ current_variant.id }}">
+          {%- endif -%}
+
+          <div class="product-hero__quantity">
+            <label for="Quantity-{{ section.id }}" class="product-hero__label">Cantidad</label>
+            <div class="product-hero__quantity-selector">
+              <button type="button" class="product-hero__qty-btn" data-action="decrease" aria-label="Disminuir cantidad">−</button>
+              <input type="number" name="quantity" id="Quantity-{{ section.id }}" value="1" min="1" class="product-hero__qty-input">
+              <button type="button" class="product-hero__qty-btn" data-action="increase" aria-label="Aumentar cantidad">+</button>
+            </div>
+          </div>
+
+          <button type="submit" class="product-hero__add-to-cart" {% unless current_variant.available %}disabled{% endunless %}>
+            {%- if current_variant.available -%}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+              {{ section.settings.add_to_cart_text | default: 'Agregar al carrito' }}
+            {%- else -%}
+              Agotado
+            {%- endif -%}
+          </button>
+
+          {{ form | payment_button }}
+        {% endform %}
+      {%- else -%}
+        <p style="color: #666; font-size: 0.8rem; margin-top: 1rem;">Selecciona un producto en el editor para activar la compra.</p>
+      {%- endif -%}
+
+      {%- if section.settings.show_trust_badges -%}
+        <div class="product-hero__trust">
+          {%- if section.settings.trust_1 != blank -%}
+            <div class="product-hero__trust-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12l5 5L20 7"/><rect x="1" y="1" width="22" height="22" rx="3"/></svg>
+              <span>{{ section.settings.trust_1 }}</span>
+            </div>
+          {%- endif -%}
+          {%- if section.settings.trust_2 != blank -%}
+            <div class="product-hero__trust-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>{{ section.settings.trust_2 }}</span>
+            </div>
+          {%- endif -%}
+          {%- if section.settings.trust_3 != blank -%}
+            <div class="product-hero__trust-item">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>{{ section.settings.trust_3 }}</span>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  /* Announcement Bar */
+  .product-hero__announcement {
+    background-color: #8B0000;
+    color: #fff;
+    overflow: hidden;
+    padding: 8px 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .product-hero__announcement-track {
+    display: flex;
+    gap: 3rem;
+    white-space: nowrap;
+    animation: marquee 30s linear infinite;
+  }
+
+  .product-hero__announcement-track span::after {
+    content: '•';
+    margin-left: 3rem;
+    opacity: 0.5;
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Hero Container */
+  .product-hero {
+    background-color: var(--product-bg, #0d0d0d);
+    color: var(--product-fg, #f5f0e8);
+  }
+
+  .product-hero__container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    align-items: center;
+  }
+
+  /* Gallery */
+  .product-hero__gallery {
+    position: sticky;
+    top: 2rem;
+  }
+
+  .product-hero__main-image {
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--hero-img-bg, #0d0d0d);
+    aspect-ratio: var(--hero-img-ratio, auto);
+  }
+
+  .product-hero__main-image img.product-hero__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: var(--hero-img-fit, contain);
+    transition: transform 0.5s ease;
+  }
+
+  .product-hero__main-image:hover img.product-hero__img {
+    transform: scale(1.03);
+  }
+
+  .product-hero__placeholder svg {
+    width: 60%;
+    opacity: 0.3;
+  }
+
+  .product-hero__thumbnails {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  .product-hero__thumb {
+    width: 72px;
+    height: 72px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    background: #1a1a1a;
+    padding: 0;
+    flex-shrink: 0;
+    transition: border-color 0.2s ease, opacity 0.2s ease;
+    opacity: 0.6;
+  }
+
+  .product-hero__thumb--active,
+  .product-hero__thumb:hover {
+    border-color: var(--product-accent, #c9a84c);
+    opacity: 1;
+  }
+
+  .product-hero__thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Product Info */
+  .product-hero__info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .product-hero__badge {
+    display: inline-block;
+    width: fit-content;
+    padding: 6px 16px;
+    border: 1px solid var(--product-accent, #c9a84c);
+    color: var(--product-accent, #c9a84c);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 600;
+    border-radius: 2px;
+  }
+
+  .product-hero__title {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--product-fg, #f5f0e8);
+  }
+
+  .product-hero__subtitle {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--product-fg-muted, #a09888);
+    font-style: italic;
+  }
+
+  .product-hero__price {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .product-hero__price-current {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--product-fg, #f5f0e8);
+  }
+
+  .product-hero__price-compare {
+    font-size: 1.25rem;
+    text-decoration: line-through;
+    color: var(--product-fg-muted, #a09888);
+  }
+
+  .product-hero__price-discount {
+    background-color: #8B0000;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .product-hero__installments {
+    font-size: 0.875rem;
+    color: var(--product-accent, #c9a84c);
+    font-weight: 500;
+  }
+
+  /* Form Elements */
+  .product-hero__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .product-hero__label {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--product-fg-muted, #a09888);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .product-hero__select {
+    width: 100%;
+    padding: 14px 16px;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    color: var(--product-fg, #f5f0e8);
+    font-size: 0.95rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a09888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+  }
+
+  .product-hero__select:focus,
+  .product-hero__select:hover {
+    border-color: var(--product-accent, #c9a84c);
+    outline: none;
+  }
+
+  .product-hero__quantity-selector {
+    display: flex;
+    align-items: center;
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+    width: fit-content;
+    background: #1a1a1a;
+  }
+
+  .product-hero__qty-btn {
+    width: 48px;
+    height: 48px;
+    background: transparent;
+    border: none;
+    color: var(--product-fg, #f5f0e8);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .product-hero__qty-btn:hover {
+    background: #252525;
+  }
+
+  .product-hero__qty-input {
+    width: 60px;
+    height: 48px;
+    text-align: center;
+    background: transparent;
+    border: none;
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
+    color: var(--product-fg, #f5f0e8);
+    font-size: 1rem;
+    -moz-appearance: textfield;
+  }
+
+  .product-hero__qty-input::-webkit-outer-spin-button,
+  .product-hero__qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+
+  .product-hero__add-to-cart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 18px 32px;
+    background-color: var(--product-accent, #c9a84c);
+    color: #0d0d0d;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .product-hero__add-to-cart:hover {
+    background-color: var(--product-accent-hover, #d4b35a);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(201, 168, 76, 0.25);
+  }
+
+  .product-hero__add-to-cart:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .product-hero__add-to-cart svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .product-hero__form .shopify-payment-button {
+    margin-top: 0.25rem;
+  }
+
+  .product-hero__form .shopify-payment-button__button--unbranded {
+    background-color: #333;
+    color: var(--product-fg, #f5f0e8);
+    border-radius: 8px;
+    padding: 16px;
+    font-weight: 600;
+  }
+
+  /* Trust Badges */
+  .product-hero__trust {
+    display: flex;
+    gap: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #222;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .product-hero__trust-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--product-fg-muted, #a09888);
+    letter-spacing: 0.02em;
+  }
+
+  .product-hero__trust-item svg {
+    color: var(--product-accent, #c9a84c);
+    flex-shrink: 0;
+  }
+
+  /* Mobile */
+  @media (max-width: 900px) {
+    .product-hero__container {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding: 2rem 1.25rem;
+    }
+
+    .product-hero__gallery {
+      position: static;
+    }
+
+    .product-hero__main-image {
+      aspect-ratio: 1 / 1;
+    }
+
+    .product-hero__trust {
+      justify-content: center;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function() {
+    const section = document.querySelector('[data-section-id="{{ section.id }}"]');
+    if (!section) return;
+
+    /* Thumbnail gallery */
+    const thumbs = section.querySelectorAll('.product-hero__thumb');
+    const mainImg = section.querySelector('.product-hero__main-image img');
+
+    thumbs.forEach(thumb => {
+      thumb.addEventListener('click', () => {
+        thumbs.forEach(t => t.classList.remove('product-hero__thumb--active'));
+        thumb.classList.add('product-hero__thumb--active');
+        if (mainImg) {
+          mainImg.src = thumb.dataset.imageUrl;
+        }
+      });
+    });
+
+    /* Quantity buttons */
+    const qtyInput = section.querySelector('.product-hero__qty-input');
+    const qtyBtns = section.querySelectorAll('.product-hero__qty-btn');
+
+    qtyBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        let val = parseInt(qtyInput.value) || 1;
+        if (btn.dataset.action === 'increase') val++;
+        if (btn.dataset.action === 'decrease' && val > 1) val--;
+        qtyInput.value = val;
+      });
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Producto - Hero",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Producto"
+    },
+    {
+      "type": "header",
+      "content": "Barra de anuncio"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announcement_bar",
+      "label": "Mostrar barra de anuncio",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Texto del anuncio",
+      "default": "ENVÍO GRATIS • EDICIÓN LIMITADA • SOLO QUEDAN POCAS COPIAS"
+    },
+    {
+      "type": "header",
+      "content": "Imagen del producto"
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Ajuste de imagen",
+      "options": [
+        { "value": "contain", "label": "Completa (sin recorte)" },
+        { "value": "cover", "label": "Cover (recorta para llenar)" },
+        { "value": "fill", "label": "Fill (estira)" },
+        { "value": "none", "label": "Original (sin ajuste)" }
+      ],
+      "default": "contain",
+      "info": "Completa muestra la imagen entera. Cover recorta para llenar el contenedor."
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Proporción del contenedor",
+      "options": [
+        { "value": "auto", "label": "Auto (tamaño original)" },
+        { "value": "2 / 3", "label": "Vertical alto (2:3)" },
+        { "value": "3 / 4", "label": "Vertical (3:4)" },
+        { "value": "1 / 1.15", "label": "Vertical libro (1:1.15)" },
+        { "value": "1 / 1", "label": "Cuadrado (1:1)" }
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "color",
+      "id": "image_bg",
+      "label": "Color de fondo imagen",
+      "default": "#0d0d0d",
+      "info": "Visible cuando la imagen no llena el contenedor."
+    },
+    {
+      "type": "header",
+      "content": "Información del producto"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Mostrar badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Texto del badge",
+      "default": "PREVENTA"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtítulo",
+      "default": "La primera bitácora diseñada para programadores. Un espacio para documentar tu código, tus ideas y tu evolución."
+    },
+    {
+      "type": "text",
+      "id": "installments_text",
+      "label": "Texto de cuotas",
+      "default": "3 cuotas sin interés disponibles"
+    },
+    {
+      "type": "text",
+      "id": "variant_label",
+      "label": "Etiqueta de variante",
+      "default": "Edición"
+    },
+    {
+      "type": "text",
+      "id": "add_to_cart_text",
+      "label": "Texto botón agregar",
+      "default": "Quiero mi bitácora"
+    },
+    {
+      "type": "header",
+      "content": "Badges de confianza"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust_badges",
+      "label": "Mostrar badges de confianza",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "trust_1",
+      "label": "Badge 1",
+      "default": "Envío gratis"
+    },
+    {
+      "type": "text",
+      "id": "trust_2",
+      "label": "Badge 2",
+      "default": "Compra segura"
+    },
+    {
+      "type": "text",
+      "id": "trust_3",
+      "label": "Badge 3",
+      "default": "Edición limitada"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Producto - Hero"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

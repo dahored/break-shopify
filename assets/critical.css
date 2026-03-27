@@ -1,5 +1,11 @@
 /** Critical CSS for the theme. This file is included on every page. */
 
+/* Smooth scroll with offset for sticky header */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
 /* Reset styles inspired by https://www.joshwcomeau.com/css/custom-css-reset/ */
 * {
   box-sizing: border-box;
@@ -73,9 +79,51 @@ p:empty {
 
 /** Theme styles below */
 body {
-  font-family: var(--font-primary--family);
-  background-color: var(--color-background);
-  color: var(--color-foreground);
+  font-family: var(--font-body, "JetBrains Mono", monospace);
+  background-color: var(--color-brand-bg, #0d0d0d);
+  color: var(--color-brand-fg, #f5f0e8);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/** Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading, "Fira Code", monospace);
+  font-weight: 700;
+  color: var(--color-brand-fg, #f5f0e8);
+}
+
+p, span, a, li, label, input, textarea, select, button {
+  font-family: var(--font-body, "JetBrains Mono", monospace);
+}
+
+a {
+  color: var(--color-brand-gold, #c9a84c);
+}
+
+/** Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/** Selection styling */
+::selection {
+  background: rgba(201, 168, 76, 0.3);
+  color: #f5f0e8;
 }
 
 /** Section layout utilities */

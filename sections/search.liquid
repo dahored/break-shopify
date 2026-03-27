@@ -5,60 +5,223 @@
   https://shopify.dev/docs/storefronts/themes/architecture/templates/search
 {% endcomment %}
 
-<h1>{{ 'search.title' | t }}</h1>
+<section class="search-page full-width">
+  <div class="search-page__container">
+    <h1 class="search-page__title">{{ 'search.title' | t }}</h1>
 
-<form action="{{ routes.search_url }}" method="get" role="search">
-  <input
-    type="search"
-    size="50"
-    name="q"
-    value="{{ search.terms | escape }}"
-    placeholder="{{ 'search.placeholder' | t }}"
-  >
-  <button type="submit">{{ 'search.submit' | t }}</button>
-</form>
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-page__form">
+      <div class="search-page__input-wrap">
+        <svg class="search-page__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ 'search.placeholder' | t }}"
+          class="search-page__input"
+        >
+      </div>
+      <button type="submit" class="search-page__submit">{{ 'search.submit' | t }}</button>
+    </form>
 
-{% if search.performed %}
-  {% if search.results_count == 0 %}
-    <p>{{ 'search.no_results_html' | t: terms: search.terms }}</p>
-  {% else %}
-    <p>{{ 'search.results_for_html' | t: terms: search.terms, count: search.results_count }}</p>
+    {% if search.performed %}
+      {% if search.results_count == 0 %}
+        <p class="search-page__no-results">{{ 'search.no_results_html' | t: terms: search.terms }}</p>
+      {% else %}
+        <p class="search-page__count">{{ 'search.results_for_html' | t: terms: search.terms, count: search.results_count }}</p>
 
-    <div class="search-results">
-      {% paginate search.results by 20 %}
-        {% # Search result items may be an article, a page, or a product. %}
-        {% for result in search.results %}
-          <div class="search-result">
-            {% assign featured_image = result.featured_image | default: result.image %}
-            {% if featured_image %}
-              {% render 'image', class: 'search-result__image', image: featured_image, url: result.url, width: 400 %}
-            {% endif %}
-            <div class="search-result__content">
-              <p>
-                {{ result.title | link_to: result.url }}
-                {% if result.price %}
-                  {{ result.price | money_with_currency }}
+        <div class="search-page__results">
+          {% paginate search.results by 20 %}
+            {% for result in search.results %}
+              <a href="{{ result.url }}" class="search-result-card">
+                {% assign featured_image = result.featured_image | default: result.image %}
+                {% if featured_image %}
+                  <div class="search-result-card__image">
+                    {% render 'image', class: 'search-result-card__img', image: featured_image, width: 400 %}
+                  </div>
                 {% endif %}
-              </p>
-            </div>
-          </div>
-        {% endfor %}
+                <div class="search-result-card__content">
+                  <h3 class="search-result-card__title">{{ result.title }}</h3>
+                  {% if result.price %}
+                    <span class="search-result-card__price">{{ result.price | money_with_currency }}</span>
+                  {% endif %}
+                </div>
+              </a>
+            {% endfor %}
 
-        {{ paginate | default_pagination }}
-      {% endpaginate %}
-    </div>
-  {% endif %}
-{% endif %}
+            {% if paginate.pages > 1 %}
+              <div class="search-page__pagination">
+                {{ paginate | default_pagination }}
+              </div>
+            {% endif %}
+          {% endpaginate %}
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
 
 {% stylesheet %}
-  .search-results {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  .search-page {
+    background-color: var(--color-brand-bg, #0d0d0d);
+    color: var(--color-brand-fg, #f5f0e8);
   }
-  .search-results .prev,
-  .search-results .page,
-  .search-results .next {
+
+  .search-page__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  .search-page__title {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .search-page__form {
+    display: flex;
+    gap: 0.75rem;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+  }
+
+  .search-page__input-wrap {
+    flex: 1;
+    position: relative;
+  }
+
+  .search-page__icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #555;
+    pointer-events: none;
+  }
+
+  .search-page__input {
+    width: 100%;
+    padding: 14px 14px 14px 44px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: var(--color-brand-fg, #f5f0e8);
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.9rem;
+    border-radius: 8px;
+    transition: border-color 0.2s ease;
+  }
+
+  .search-page__input:focus {
+    outline: none;
+    border-color: var(--color-brand-gold, #c9a84c);
+  }
+
+  .search-page__submit {
+    padding: 14px 24px;
+    background-color: var(--color-brand-gold, #c9a84c);
+    color: #0d0d0d;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .search-page__submit:hover {
+    background-color: var(--color-brand-gold-hover, #d4b35a);
+  }
+
+  .search-page__no-results,
+  .search-page__count {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.9rem;
+    color: var(--color-brand-fg-muted, #a09888);
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .search-page__results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .search-result-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #111;
+    border: 1px solid #1a1a1a;
+    transition: all 0.3s ease;
+  }
+
+  .search-result-card:hover {
+    border-color: #2a2520;
+    transform: translateY(-3px);
+  }
+
+  .search-result-card__image {
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: #1a1a1a;
+  }
+
+  .search-result-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .search-result-card__content {
+    padding: 1rem;
+  }
+
+  .search-result-card__title {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+  }
+
+  .search-result-card__price {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.85rem;
+    color: var(--color-brand-gold, #c9a84c);
+    font-weight: 600;
+  }
+
+  .search-page__pagination {
     grid-column: 1 / -1;
+    text-align: center;
+    padding-top: 2rem;
+  }
+
+  .search-page__pagination a,
+  .search-page__pagination span {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.85rem;
+    color: var(--color-brand-fg-muted, #a09888);
+    text-decoration: none;
+    padding: 8px 12px;
+    transition: color 0.2s ease;
+  }
+
+  .search-page__pagination a:hover {
+    color: var(--color-brand-gold, #c9a84c);
+  }
+
+  @media (max-width: 600px) {
+    .search-page__form { flex-direction: column; }
   }
 {% endstylesheet %}
 

@@ -5,29 +5,280 @@
   https://shopify.dev/docs/storefronts/themes/architecture/templates/cart
 {% endcomment %}
 
-<h1>{{ 'cart.title' | t }}</h1>
+<section class="cart-page full-width">
+  <div class="cart-page__container">
+    <h1 class="cart-page__title">{{ 'cart.title' | t }}</h1>
 
-<form action="{{ routes.cart_url }}" method="post">
-  <table>
-    {% for item in cart.items %}
-      <tr>
-        <td>
-          {% render 'image', image: item.image, url: item.url %}
-        </td>
-        <td>
-          <p>{{ item.product.title }}</p>
-          {{ 'cart.remove' | t | link_to: item.url_to_remove }}
-        </td>
-        <td>
-          <input type="text" name="updates[]" value="{{ item.quantity }}">
-          <input type="submit" value="{{ 'cart.update' | t }}">
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
+    {% if cart.items.size > 0 %}
+      <form action="{{ routes.cart_url }}" method="post" class="cart-page__form">
+        <div class="cart-page__items">
+          {% for item in cart.items %}
+            <div class="cart-item">
+              <div class="cart-item__image">
+                {% render 'image', image: item.image, url: item.url, class: 'cart-item__img' %}
+              </div>
+              <div class="cart-item__details">
+                <h3 class="cart-item__name">{{ item.product.title }}</h3>
+                {% if item.variant.title != 'Default Title' %}
+                  <p class="cart-item__variant">{{ item.variant.title }}</p>
+                {% endif %}
+                <p class="cart-item__price">{{ item.price | money }}</p>
+              </div>
+              <div class="cart-item__quantity">
+                <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" class="cart-item__qty-input">
+              </div>
+              <div class="cart-item__total">
+                <span>{{ item.line_price | money }}</span>
+              </div>
+              <a href="{{ item.url_to_remove }}" class="cart-item__remove" aria-label="{{ 'cart.remove' | t }}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </a>
+            </div>
+          {% endfor %}
+        </div>
 
-  <input type="submit" name="checkout" value="{{ 'cart.checkout' | t }}">
-</form>
+        <div class="cart-page__footer">
+          <div class="cart-page__total">
+            <span class="cart-page__total-label">Total</span>
+            <span class="cart-page__total-price">{{ cart.total_price | money }}</span>
+          </div>
+          <div class="cart-page__actions">
+            <input type="submit" value="{{ 'cart.update' | t }}" class="cart-page__update-btn">
+            <input type="submit" name="checkout" value="{{ 'cart.checkout' | t }}" class="cart-page__checkout-btn">
+          </div>
+        </div>
+      </form>
+    {% else %}
+      <div class="cart-page__empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <p>Tu carrito está vacío</p>
+        <a href="{{ routes.all_products_collection_url }}" class="cart-page__continue-btn">Seguir comprando</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .cart-page {
+    background-color: var(--color-brand-bg, #0d0d0d);
+    color: var(--color-brand-fg, #f5f0e8);
+  }
+
+  .cart-page__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  .cart-page__title {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 700;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .cart-page__items {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cart-item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto auto auto;
+    gap: 1.5rem;
+    align-items: center;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .cart-item__image {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #1a1a1a;
+  }
+
+  .cart-item__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .cart-item__name {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .cart-item__variant,
+  .cart-item__price {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.8rem;
+    color: var(--color-brand-fg-muted, #a09888);
+    margin-top: 0.25rem;
+  }
+
+  .cart-item__qty-input {
+    width: 60px;
+    height: 40px;
+    text-align: center;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: var(--color-brand-fg, #f5f0e8);
+    border-radius: 6px;
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.85rem;
+  }
+
+  .cart-item__total {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.95rem;
+    font-weight: 600;
+    min-width: 80px;
+    text-align: right;
+  }
+
+  .cart-item__remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    color: #666;
+    transition: all 0.2s ease;
+  }
+
+  .cart-item__remove:hover {
+    color: var(--color-brand-gold, #c9a84c);
+    background: rgba(201, 168, 76, 0.1);
+  }
+
+  .cart-page__footer {
+    padding-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .cart-page__total {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+  }
+
+  .cart-page__total-label {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.85rem;
+    color: var(--color-brand-fg-muted, #a09888);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .cart-page__total-price {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: 1.75rem;
+    font-weight: 700;
+  }
+
+  .cart-page__actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .cart-page__update-btn {
+    padding: 12px 24px;
+    background: transparent;
+    border: 1px solid #333;
+    color: var(--color-brand-fg-muted, #a09888);
+    border-radius: 8px;
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .cart-page__update-btn:hover {
+    border-color: var(--color-brand-fg-muted, #a09888);
+    color: var(--color-brand-fg, #f5f0e8);
+  }
+
+  .cart-page__checkout-btn {
+    padding: 12px 32px;
+    background-color: var(--color-brand-gold, #c9a84c);
+    color: #0d0d0d;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .cart-page__checkout-btn:hover {
+    background-color: var(--color-brand-gold-hover, #d4b35a);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(201, 168, 76, 0.25);
+  }
+
+  .cart-page__empty {
+    text-align: center;
+    padding: 4rem 0;
+  }
+
+  .cart-page__empty svg {
+    margin: 0 auto 1.5rem;
+    opacity: 0.3;
+  }
+
+  .cart-page__empty p {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    color: var(--color-brand-fg-muted, #a09888);
+    margin-bottom: 2rem;
+  }
+
+  .cart-page__continue-btn {
+    display: inline-block;
+    padding: 14px 32px;
+    background-color: var(--color-brand-gold, #c9a84c);
+    color: #0d0d0d;
+    text-decoration: none;
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .cart-page__continue-btn:hover {
+    background-color: var(--color-brand-gold-hover, #d4b35a);
+  }
+
+  @media (max-width: 768px) {
+    .cart-item {
+      grid-template-columns: 64px 1fr auto;
+      gap: 1rem;
+    }
+    .cart-item__total { display: none; }
+    .cart-item__remove { grid-row: 1; grid-column: 3; }
+    .cart-page__footer { flex-direction: column; align-items: stretch; }
+    .cart-page__total { justify-content: space-between; }
+    .cart-page__actions { flex-direction: column; }
+  }
+{% endstylesheet %}
 
 {% schema %}
 {

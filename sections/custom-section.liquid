@@ -15,6 +15,8 @@
     position: relative;
     overflow: hidden;
     width: 100%;
+    background-color: var(--color-brand-bg, #0d0d0d);
+    color: var(--color-brand-fg, #f5f0e8);
   }
   .custom-section__background {
     position: absolute;
@@ -34,9 +36,15 @@
   .custom-section__content {
     display: grid;
     grid-template-columns: var(--content-grid);
+    font-family: var(--font-body, "JetBrains Mono", monospace);
   }
   .custom-section__content > * {
     grid-column: 2;
+  }
+  .custom-section__content h1,
+  .custom-section__content h2,
+  .custom-section__content h3 {
+    font-family: var(--font-heading, "Fira Code", monospace);
   }
 {% endstylesheet %}
 

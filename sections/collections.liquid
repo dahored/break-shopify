@@ -5,51 +5,119 @@
   https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
 {% endcomment %}
 
-<h1>{{ 'collections.title' | t }}</h1>
+<section class="collections-page full-width">
+  <div class="collections-page__container">
+    <h1 class="collections-page__title">{{ 'collections.title' | t }}</h1>
 
-<div
-  class="collections {{ section.settings.grid_item_width }}"
-  style="--grid-gap: {{ section.settings.grid_gap }}px"
->
-  {% for collection in collections %}
-    <a class="collection-card" href="{{ collection.url }}">
-      {% if collection.featured_image %}
-        {% render 'image',
-          class: 'collection-card__image',
-          image: collection.featured_image,
-          width: 600,
-          height: 600,
-          crop: 'center'
-        %}
-      {% endif %}
-
-      <div class="collection-card__content">
-        <p>{{ collection.title }}</p>
-
-        {% if collection.description %}
-          <p>{{ collection.description | strip_html | truncatewords: 15 }}</p>
-        {% endif %}
-      </div>
-    </a>
-  {% endfor %}
-</div>
+    <div
+      class="collections-page__grid {{ section.settings.grid_item_width }}"
+      style="--grid-gap: {{ section.settings.grid_gap }}px"
+    >
+      {% for collection in collections %}
+        <a class="coll-card" href="{{ collection.url }}">
+          <div class="coll-card__image">
+            {% if collection.featured_image %}
+              {% render 'image',
+                class: 'coll-card__img',
+                image: collection.featured_image,
+                width: 600,
+                height: 600,
+                crop: 'center'
+              %}
+            {% endif %}
+          </div>
+          <div class="coll-card__content">
+            <h3 class="coll-card__name">{{ collection.title }}</h3>
+            {% if collection.description %}
+              <p class="coll-card__desc">{{ collection.description | strip_html | truncatewords: 15 }}</p>
+            {% endif %}
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
 
 {% stylesheet %}
-  .collections {
+  .collections-page {
+    background-color: var(--color-brand-bg, #0d0d0d);
+    color: var(--color-brand-fg, #f5f0e8);
+  }
+
+  .collections-page__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  .collections-page__title {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .collections-page__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(var(--collection-card-size), 100%), 1fr));
-    gap: var(--grid-gap);
+    grid-template-columns: repeat(auto-fill, minmax(min(var(--collection-card-size, 280px), 100%), 1fr));
+    gap: var(--grid-gap, 16px);
   }
-  .collections--compact {
-    --collection-card-size: 160px;
-  }
-  .collections--full {
-    --collection-card-size: 280px;
-  }
-  .collection-card {
+
+  .collections-page__grid.collections--compact { --collection-card-size: 200px; }
+  .collections-page__grid.collections--full { --collection-card-size: 280px; }
+
+  .coll-card {
     display: flex;
     flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #111;
+    border: 1px solid #1a1a1a;
+    transition: all 0.3s ease;
+  }
+
+  .coll-card:hover {
+    border-color: #2a2520;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  }
+
+  .coll-card__image {
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: #1a1a1a;
+  }
+
+  .coll-card__img {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .coll-card:hover .coll-card__img {
+    transform: scale(1.05);
+  }
+
+  .coll-card__content {
+    padding: 1.25rem;
+  }
+
+  .coll-card__name {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+  }
+
+  .coll-card__desc {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.8rem;
+    color: var(--color-brand-fg-muted, #a09888);
+    line-height: 1.5;
   }
 {% endstylesheet %}
 

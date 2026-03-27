@@ -1,0 +1,186 @@
+{% comment %}
+  Author Message Section - Full-width with image and message
+{% endcomment %}
+
+<section class="product-author full-width" id="autor">
+  <div class="product-author__container">
+    <div class="product-author__media">
+      {%- if section.settings.image != blank -%}
+        {% render 'image', image: section.settings.image, class: 'product-author__img' %}
+      {%- else -%}
+        <div class="product-author__placeholder">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+      {%- endif -%}
+      {%- if section.settings.image_caption != blank -%}
+        <p class="product-author__caption">{{ section.settings.image_caption }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="product-author__content">
+      {%- if section.settings.overline != blank -%}
+        <span class="product-author__overline">{{ section.settings.overline }}</span>
+      {%- endif -%}
+
+      <h2 class="product-author__heading">{{ section.settings.heading }}</h2>
+
+      <div class="product-author__message">
+        {{ section.settings.message }}
+      </div>
+
+      {%- if section.settings.signature != blank -%}
+        <p class="product-author__signature">— {{ section.settings.signature }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .product-author {
+    background: linear-gradient(180deg, #0d0d0d 0%, #111 50%, #0d0d0d 100%);
+    color: #f5f0e8;
+  }
+
+  .product-author__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .product-author__media {
+    text-align: center;
+  }
+
+  .product-author__img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 16px;
+    aspect-ratio: 4/5;
+    object-fit: cover;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  .product-author__placeholder {
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 4/5;
+    border-radius: 16px;
+    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+  }
+
+  .product-author__caption {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    font-style: italic;
+    color: #c9a84c;
+    letter-spacing: 0.05em;
+  }
+
+  .product-author__overline {
+    display: inline-block;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #c9a84c;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  .product-author__heading {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+  }
+
+  .product-author__message {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #a09888;
+  }
+
+  .product-author__message p + p {
+    margin-top: 1rem;
+  }
+
+  .product-author__signature {
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: #c9a84c;
+    font-weight: 500;
+  }
+
+  @media (max-width: 768px) {
+    .product-author__container {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      padding: 3rem 1.25rem;
+      text-align: center;
+    }
+
+    .product-author__img {
+      max-width: 300px;
+      margin: 0 auto;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Producto - Autor",
+  "settings": [
+    {
+      "type": "text",
+      "id": "overline",
+      "label": "Texto superior",
+      "default": "Conoce al autor"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "default": "Un mensaje del creador"
+    },
+    {
+      "type": "richtext",
+      "id": "message",
+      "label": "Mensaje",
+      "default": "<p>Antes de continuar, quiero contarte por qué nació esta bitácora.</p><p>Como programador, siempre sentí que las libretas tradicionales no estaban hechas para nosotros. Necesitaba un espacio que entendiera la forma en que pensamos, planificamos y resolvemos problemas.</p><p>Break nació de esa necesidad. Es el resultado de meses de diseño pensando en cada detalle que un developer necesita para documentar su camino.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Foto del autor"
+    },
+    {
+      "type": "text",
+      "id": "image_caption",
+      "label": "Pie de imagen",
+      "default": "todo lo posible"
+    },
+    {
+      "type": "text",
+      "id": "signature",
+      "label": "Firma",
+      "default": "El equipo de Break Universe"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Producto - Autor"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

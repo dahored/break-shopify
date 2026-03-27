@@ -1,20 +1,293 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "main": {
-      "type": "product",
-      "settings": {}
+    "product-hero": {
+      "type": "product-hero",
+      "settings": {
+        "show_announcement_bar": true,
+        "announcement_text": "ENVÍO GRATIS • EDICIÓN LIMITADA • SOLO QUEDAN POCAS COPIAS • 3 CUOTAS SIN INTERÉS",
+        "show_badge": true,
+        "badge_text": "PREVENTA",
+        "subtitle": "La primera bitácora diseñada para programadores. Un espacio para documentar tu código, tus ideas y tu evolución.",
+        "installments_text": "3 cuotas sin interés disponibles",
+        "add_to_cart_text": "Quiero mi bitácora",
+        "show_trust_badges": true,
+        "trust_1": "Envío gratis",
+        "trust_2": "Compra segura",
+        "trust_3": "Edición limitada"
+      }
+    },
+    "features-strip": {
+      "type": "product-features",
+      "settings": {},
+      "blocks": {
+        "feature-1": {
+          "type": "feature",
+          "settings": {
+            "icon": "shipping",
+            "title": "Envío gratis",
+            "description": "A todo el país"
+          }
+        },
+        "feature-2": {
+          "type": "feature",
+          "settings": {
+            "icon": "book",
+            "title": "Libro físico",
+            "description": "Tapa dura premium"
+          }
+        },
+        "feature-3": {
+          "type": "feature",
+          "settings": {
+            "icon": "lock",
+            "title": "Edición limitada",
+            "description": "Pocas unidades"
+          }
+        },
+        "feature-4": {
+          "type": "feature",
+          "settings": {
+            "icon": "shield",
+            "title": "Compra segura",
+            "description": "100% protegido"
+          }
+        }
+      },
+      "block_order": ["feature-1", "feature-2", "feature-3", "feature-4"]
+    },
+    "benefits": {
+      "type": "product-benefits",
+      "settings": {
+        "overline": "¿Por qué esta bitácora?",
+        "heading": "Lo que esta bitácora te ofrece",
+        "subheading": "Diseñada específicamente para la mente del programador. No es una libreta cualquiera."
+      },
+      "blocks": {
+        "benefit-1": {
+          "type": "benefit",
+          "settings": {
+            "title": "Documenta tu código",
+            "description": "Espacios diseñados para pseudocódigo, diagramas de flujo y notas técnicas."
+          }
+        },
+        "benefit-2": {
+          "type": "benefit",
+          "settings": {
+            "title": "Planifica tus sprints",
+            "description": "Secciones de planificación semanal y tracking de objetivos para developers."
+          }
+        },
+        "benefit-3": {
+          "type": "benefit",
+          "settings": {
+            "title": "Reflexiona y crece",
+            "description": "Prompts de reflexión diseñados para tu crecimiento profesional como dev."
+          }
+        },
+        "benefit-4": {
+          "type": "benefit",
+          "settings": {
+            "title": "Registra tus bugs",
+            "description": "Secciones dedicadas para documentar bugs, soluciones y aprendizajes."
+          }
+        },
+        "benefit-5": {
+          "type": "benefit",
+          "settings": {
+            "title": "Diseño premium",
+            "description": "Tapa dura, papel de alta calidad y un diseño que inspira cada vez que la abres."
+          }
+        },
+        "benefit-6": {
+          "type": "benefit",
+          "settings": {
+            "title": "Hecha por devs",
+            "description": "Creada por programadores que entienden exactamente lo que necesitas."
+          }
+        }
+      },
+      "block_order": ["benefit-1", "benefit-2", "benefit-3", "benefit-4", "benefit-5", "benefit-6"]
+    },
+    "author": {
+      "type": "product-author",
+      "settings": {
+        "overline": "Conoce al autor",
+        "heading": "Un mensaje del creador",
+        "message": "<p>Antes de continuar, quiero contarte por qué nació esta bitácora.</p><p>Como programador, siempre sentí que las libretas tradicionales no estaban hechas para nosotros. Necesitaba un espacio que entendiera la forma en que pensamos, planificamos y resolvemos problemas.</p><p>Break nació de esa necesidad. Es el resultado de meses de diseño pensando en cada detalle que un developer necesita para documentar su camino.</p>",
+        "image_caption": "todo lo posible",
+        "signature": "El equipo de Break Universe"
+      }
+    },
+    "bonuses": {
+      "type": "product-bonuses",
+      "settings": {
+        "overline": "Con tu compra",
+        "heading": "La bitácora incluye regalos para ti",
+        "subheading": "Porque queremos que tu experiencia sea completa, incluimos estos extras sin costo adicional."
+      },
+      "blocks": {
+        "bonus-1": {
+          "type": "bonus",
+          "settings": {
+            "title": "Guía de productividad para devs",
+            "description": "Una guía completa para estructurar tu semana y maximizar tu output como programador.",
+            "value": "$15 USD"
+          }
+        },
+        "bonus-2": {
+          "type": "bonus",
+          "settings": {
+            "title": "Sticker pack exclusivo",
+            "description": "Set de stickers diseñados especialmente para la comunidad Break.",
+            "value": "$8 USD"
+          }
+        },
+        "bonus-3": {
+          "type": "bonus",
+          "settings": {
+            "title": "Acceso a la comunidad",
+            "description": "Únete a nuestra comunidad privada de programadores y comparte tu progreso.",
+            "value": "Sin precio"
+          }
+        }
+      },
+      "block_order": ["bonus-1", "bonus-2", "bonus-3"]
+    },
+    "pricing": {
+      "type": "product-pricing",
+      "settings": {
+        "overline": "Precio de lanzamiento",
+        "heading": "Asegura tu copia antes de que se agoten",
+        "discount_text": "28% OFF",
+        "show_compare_price": true,
+        "compare_price_text": "$ 89.900",
+        "price_text": "64.900",
+        "currency_label": "ARS",
+        "installments_text": "o 3 cuotas de $ 21.634 sin interés",
+        "button_text": "COMPRAR AHORA",
+        "urgency_text": "Solo quedan 98 copias · Esta oferta puede terminar en cualquier momento"
+      },
+      "blocks": {
+        "badge-1": { "type": "badge", "settings": { "icon": "shipping", "text": "Envío gratis" } },
+        "badge-2": { "type": "badge", "settings": { "icon": "guarantee", "text": "Garantía" } },
+        "badge-3": { "type": "badge", "settings": { "icon": "gift", "text": "6 bonos transformadores" } },
+        "badge-4": { "type": "badge", "settings": { "icon": "signature", "text": "Firma del autor" } }
+      },
+      "block_order": ["badge-1", "badge-2", "badge-3", "badge-4"]
+    },
+    "faq": {
+      "type": "product-faq",
+      "settings": {
+        "overline": "Preguntas frecuentes",
+        "heading": "¿Tienes alguna duda?"
+      },
+      "blocks": {
+        "faq-1": {
+          "type": "faq",
+          "settings": {
+            "question": "¿Cuándo recibo mi bitácora?",
+            "answer": "Los envíos se realizan dentro de los 5 días hábiles posteriores a la compra. Recibirás un código de seguimiento por email."
+          }
+        },
+        "faq-2": {
+          "type": "faq",
+          "settings": {
+            "question": "¿El envío es realmente gratis?",
+            "answer": "Sí, el envío es completamente gratis a todo el país. Sin costos ocultos ni sorpresas."
+          }
+        },
+        "faq-3": {
+          "type": "faq",
+          "settings": {
+            "question": "¿Puedo pagar en cuotas?",
+            "answer": "¡Por supuesto! Ofrecemos hasta 3 cuotas sin interés con tarjetas de crédito."
+          }
+        },
+        "faq-4": {
+          "type": "faq",
+          "settings": {
+            "question": "¿Cuántas páginas tiene la bitácora?",
+            "answer": "La bitácora cuenta con más de 200 páginas diseñadas con diferentes secciones para planificación, documentación de código, reflexiones y más."
+          }
+        },
+        "faq-5": {
+          "type": "faq",
+          "settings": {
+            "question": "¿Es solo para programadores?",
+            "answer": "Fue diseñada pensando en programadores, pero cualquier persona del mundo tech (diseñadores, PMs, data scientists) puede sacarle provecho."
+          }
+        }
+      },
+      "block_order": ["faq-1", "faq-2", "faq-3", "faq-4", "faq-5"]
+    },
+    "cta-banner": {
+      "type": "product-cta-banner",
+      "settings": {
+        "overline": "No te quedes sin la tuya",
+        "heading": "Tu bitácora te está esperando",
+        "subheading": "Más de 200 páginas diseñadas para que documentes tu camino como programador. Edición limitada que no se reimprime.",
+        "show_price": true,
+        "price_note": "3 cuotas sin interés",
+        "button_text": "Comprar ahora",
+        "footer_text": "Envío gratis · Garantía de 7 días · Compra 100% segura"
+      },
+      "blocks": {
+        "perk-1": { "type": "perk", "settings": { "text": "Edición limitada con diseño premium" } },
+        "perk-2": { "type": "perk", "settings": { "text": "Envío gratis a todo el país" } },
+        "perk-3": { "type": "perk", "settings": { "text": "3 cuotas sin interés" } },
+        "perk-4": { "type": "perk", "settings": { "text": "Bonos digitales incluidos" } }
+      },
+      "block_order": ["perk-1", "perk-2", "perk-3", "perk-4"]
+    },
+    "cta": {
+      "type": "product-cta",
+      "settings": {
+        "overline": "Recapitulemos",
+        "heading": "Todo lo que obtienes con tu copia",
+        "subheading": "No es solo una bitácora. Es tu compañero de desarrollo.",
+        "show_recap": true,
+        "show_price": true,
+        "button_text": "Quiero mi bitácora →",
+        "guarantee_text": "Garantía de satisfacción de 7 días"
+      },
+      "blocks": {
+        "recap-1": {
+          "type": "recap_item",
+          "settings": { "text": "Bitácora Break edición limitada" }
+        },
+        "recap-2": {
+          "type": "recap_item",
+          "settings": { "text": "3 cuotas sin interés" }
+        },
+        "recap-3": {
+          "type": "recap_item",
+          "settings": { "text": "Envío gratis a todo el país" }
+        },
+        "recap-4": {
+          "type": "recap_item",
+          "settings": { "text": "Firma del autor en las primeras 100 copias" }
+        },
+        "recap-5": {
+          "type": "recap_item",
+          "settings": { "text": "Bonuses digitales incluidos" }
+        },
+        "recap-6": {
+          "type": "recap_item",
+          "settings": { "text": "Garantía de satisfacción de 7 días" }
+        }
+      },
+      "block_order": ["recap-1", "recap-2", "recap-3", "recap-4", "recap-5", "recap-6"]
     }
   },
   "order": [
-    "main"
+    "product-hero",
+    "features-strip",
+    "benefits",
+    "author",
+    "bonuses",
+    "pricing",
+    "faq",
+    "cta-banner",
+    "cta"
   ]
 }

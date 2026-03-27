@@ -1,45 +1,163 @@
 {% comment %}
   This section is used in the product template to render product page with
-  media, content, and add-to-cart form.
+  media, content, and add-to-cart form. (Fallback section)
 
   https://shopify.dev/docs/storefronts/themes/architecture/templates/product
 {% endcomment %}
 
-<div class="product-images">
-  {% for image in product.images %}
-    {% render 'image', class: 'product-image', image: image %}
-  {% endfor %}
-</div>
-
-<div class="product-info">
-  <h1>{{ product.title }}</h1>
-  <p>{{ product.price | money }}</p>
-  <p>{{ product.description }}</p>
-</div>
-
-<div class="product-form">
-  {% form 'product', product %}
-    {% assign current_variant = product.selected_or_first_available_variant %}
-
-    <select name="id">
-      {% for variant in product.variants %}
-        <option
-          value="{{ variant.id }}"
-          {% if variant == current_variant %}
-            selected="selected"
-          {% endif %}
-        >
-          {{ variant.title }} - {{ variant.price | money }}
-        </option>
+<section class="product-default full-width">
+  <div class="product-default__container">
+    <div class="product-default__gallery">
+      {% for image in product.images %}
+        <div class="product-default__img-wrap">
+          {% render 'image', class: 'product-default__img', image: image %}
+        </div>
       {% endfor %}
-    </select>
+    </div>
 
-    <input type="text" name="quantity" min="1" value="1">
+    <div class="product-default__info">
+      <h1 class="product-default__title">{{ product.title }}</h1>
+      <p class="product-default__price">{{ product.price | money }}</p>
+      <div class="product-default__desc">{{ product.description }}</div>
 
-    <input type="submit" value="Add to cart">
-    {{ form | payment_button }}
-  {% endform %}
-</div>
+      {% form 'product', product, class: 'product-default__form' %}
+        {% assign current_variant = product.selected_or_first_available_variant %}
+
+        {% if product.variants.size > 1 %}
+          <select name="id" class="product-default__select">
+            {% for variant in product.variants %}
+              <option
+                value="{{ variant.id }}"
+                {% if variant == current_variant %}selected="selected"{% endif %}
+              >
+                {{ variant.title }} - {{ variant.price | money }}
+              </option>
+            {% endfor %}
+          </select>
+        {% else %}
+          <input type="hidden" name="id" value="{{ current_variant.id }}">
+        {% endif %}
+
+        <input type="number" name="quantity" min="1" value="1" class="product-default__qty">
+        <input type="submit" value="Agregar al carrito" class="product-default__submit">
+        {{ form | payment_button }}
+      {% endform %}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .product-default {
+    background-color: var(--color-brand-bg, #0d0d0d);
+    color: var(--color-brand-fg, #f5f0e8);
+  }
+
+  .product-default__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .product-default__gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .product-default__img-wrap {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #1a1a1a;
+  }
+
+  .product-default__img {
+    width: 100%;
+    height: auto;
+  }
+
+  .product-default__title {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .product-default__price {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-brand-gold, #c9a84c);
+    margin-bottom: 1.5rem;
+  }
+
+  .product-default__desc {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--color-brand-fg-muted, #a09888);
+    margin-bottom: 2rem;
+  }
+
+  .product-default__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .product-default__select {
+    padding: 12px 14px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: var(--color-brand-fg, #f5f0e8);
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.9rem;
+    border-radius: 8px;
+  }
+
+  .product-default__qty {
+    width: 80px;
+    padding: 12px 14px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: var(--color-brand-fg, #f5f0e8);
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.9rem;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .product-default__submit {
+    padding: 16px 32px;
+    background-color: var(--color-brand-gold, #c9a84c);
+    color: #0d0d0d;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .product-default__submit:hover {
+    background-color: var(--color-brand-gold-hover, #d4b35a);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(201, 168, 76, 0.25);
+  }
+
+  @media (max-width: 768px) {
+    .product-default__container {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+{% endstylesheet %}
 
 {% schema %}
 {

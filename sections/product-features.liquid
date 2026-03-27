@@ -1,0 +1,167 @@
+{% comment %}
+  Features Strip Section - Horizontal feature highlights
+{% endcomment %}
+
+<section class="features-strip full-width">
+  <div class="features-strip__container">
+    {%- for block in section.blocks -%}
+      <div class="features-strip__item" {{ block.shopify_attributes }}>
+        {%- if block.settings.icon == 'shipping' -%}
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        {%- elsif block.settings.icon == 'book' -%}
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        {%- elsif block.settings.icon == 'lock' -%}
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        {%- elsif block.settings.icon == 'star' -%}
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        {%- elsif block.settings.icon == 'shield' -%}
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        {%- else -%}
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        {%- endif -%}
+        <div class="features-strip__text">
+          <span class="features-strip__title">{{ block.settings.title }}</span>
+          {%- if block.settings.description != blank -%}
+            <span class="features-strip__desc">{{ block.settings.description }}</span>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .features-strip {
+    background-color: #111;
+    border-top: 1px solid #1f1f1f;
+    border-bottom: 1px solid #1f1f1f;
+  }
+
+  .features-strip__container {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .features-strip__item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #a09888;
+  }
+
+  .features-strip__item svg {
+    color: #c9a84c;
+    flex-shrink: 0;
+  }
+
+  .features-strip__text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .features-strip__title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #f5f0e8;
+    letter-spacing: 0.02em;
+  }
+
+  .features-strip__desc {
+    font-size: 0.75rem;
+    color: #777;
+  }
+
+  @media (max-width: 768px) {
+    .features-strip__container {
+      gap: 1.5rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Producto - Features",
+  "max_blocks": 5,
+  "settings": [],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Característica",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Ícono",
+          "options": [
+            { "value": "shipping", "label": "Envío" },
+            { "value": "book", "label": "Libro" },
+            { "value": "lock", "label": "Seguridad" },
+            { "value": "star", "label": "Estrella" },
+            { "value": "shield", "label": "Escudo" },
+            { "value": "check", "label": "Check" }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Título",
+          "default": "Característica"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Descripción"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Producto - Features",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "shipping",
+            "title": "Envío gratis",
+            "description": "A todo el país"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "book",
+            "title": "Libro físico",
+            "description": "Tapa dura premium"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "lock",
+            "title": "Edición limitada",
+            "description": "Pocas unidades"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "shield",
+            "title": "Compra segura",
+            "description": "100% protegido"
+          }
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

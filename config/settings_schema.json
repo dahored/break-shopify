@@ -1,9 +1,9 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Skeleton",
-    "theme_version": "0.1.0",
-    "theme_author": "Shopify",
+    "theme_name": "Break Theme",
+    "theme_version": "1.0.0",
+    "theme_author": "Break Universe",
     "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
     "theme_support_url": "https://support.shopify.com/"
   },
@@ -12,13 +12,38 @@
     "settings": [
       {
         "type": "header",
-        "content": "t:general.fonts"
+        "content": "Fuentes"
       },
       {
         "type": "font_picker",
         "id": "type_primary_font",
         "default": "work_sans_n4",
-        "label": "t:general.primary"
+        "label": "Fuente de respaldo",
+        "info": "El tema usa Fira Code (títulos) y JetBrains Mono (texto) por defecto vía Google Fonts."
+      },
+      {
+        "type": "header",
+        "content": "Tamaños"
+      },
+      {
+        "type": "range",
+        "id": "heading_scale",
+        "label": "Escala de títulos",
+        "min": 80,
+        "max": 150,
+        "step": 5,
+        "default": 100,
+        "unit": "%"
+      },
+      {
+        "type": "range",
+        "id": "body_scale",
+        "label": "Escala de texto",
+        "min": 80,
+        "max": 130,
+        "step": 5,
+        "default": 100,
+        "unit": "%"
       }
     ]
   },
@@ -26,30 +51,34 @@
     "name": "t:general.layout",
     "settings": [
       {
-        "type": "select",
+        "type": "range",
         "id": "max_page_width",
-        "label": "t:labels.page_width",
-        "options": [
-          {
-            "value": "90rem",
-            "label": "t:options.page_width.narrow"
-          },
-          {
-            "value": "110rem",
-            "label": "t:options.page_width.wide"
-          }
-        ],
-        "default": "90rem"
+        "label": "Ancho máximo de página",
+        "min": 1000,
+        "max": 1600,
+        "step": 50,
+        "default": 1200,
+        "unit": "px"
       },
       {
         "type": "range",
         "id": "min_page_margin",
         "min": 10,
-        "max": 100,
-        "step": 1,
+        "max": 60,
+        "step": 2,
         "unit": "px",
-        "label": "t:labels.page_margin",
+        "label": "Margen lateral mínimo",
         "default": 20
+      },
+      {
+        "type": "range",
+        "id": "input_corner_radius",
+        "min": 0,
+        "max": 16,
+        "step": 2,
+        "unit": "px",
+        "label": "Radio de bordes (inputs/botones)",
+        "default": 8
       }
     ]
   },
@@ -57,26 +86,59 @@
     "name": "t:general.colors",
     "settings": [
       {
+        "type": "header",
+        "content": "Colores principales"
+      },
+      {
         "type": "color",
         "id": "background_color",
-        "default": "#FFFFFF",
-        "label": "t:labels.background"
+        "default": "#0d0d0d",
+        "label": "Fondo"
+      },
+      {
+        "type": "color",
+        "id": "background_color_alt",
+        "default": "#111111",
+        "label": "Fondo alternativo"
       },
       {
         "type": "color",
         "id": "foreground_color",
-        "default": "#333333",
-        "label": "t:labels.foreground"
+        "default": "#f5f0e8",
+        "label": "Texto principal"
       },
       {
-        "type": "range",
-        "id": "input_corner_radius",
-        "min": 0,
-        "max": 10,
-        "step": 1,
-        "unit": "px",
-        "label": "t:labels.input_corner_radius",
-        "default": 4
+        "type": "color",
+        "id": "foreground_color_muted",
+        "default": "#a09888",
+        "label": "Texto secundario"
+      },
+      {
+        "type": "header",
+        "content": "Color de marca"
+      },
+      {
+        "type": "color",
+        "id": "brand_color",
+        "default": "#c9a84c",
+        "label": "Color de acento (dorado)"
+      },
+      {
+        "type": "color",
+        "id": "brand_color_hover",
+        "default": "#d4b35a",
+        "label": "Color de acento hover"
+      }
+    ]
+  },
+  {
+    "name": "CSS personalizado",
+    "settings": [
+      {
+        "type": "textarea",
+        "id": "custom_css",
+        "label": "CSS personalizado",
+        "info": "Añade CSS personalizado que se aplicará a todo el tema."
       }
     ]
   }

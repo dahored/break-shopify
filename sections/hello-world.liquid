@@ -1,143 +1,429 @@
 {% comment %}
-  Welcome to Shopify theme development!
+  Hero Section - Fully editable from the Theme Editor
 {% endcomment %}
 
-<div class="welcome full-width">
-  <div class="welcome-content">
-    <div>
-      <h1>Hello, World!</h1>
-
-      <p class="welcome-description">
-        The Skeleton theme is a minimal, carefully structured Shopify theme designed to help you quickly get started.
-        Designed with modularity, maintainability, and Shopify's best practices in mind.
-      </p>
-
-      <p class="welcome-description">
-        Themes shape the online store experience for merchants and their customers. Build fast, flexible themes at scale
-        using Liquid, Shopify's theme templating language, along with HTML, CSS, JavaScript, and JSON.
-      </p>
+<section class="hero full-width">
+  {%- if section.settings.background_image != blank -%}
+    <div class="hero__bg">
+      {% render 'image', image: section.settings.background_image, class: 'hero__bg-img' %}
     </div>
-    <div class="icon">
-      <img src="{{ 'shoppy-x-ray.svg' | asset_url }}" width="300" height="300">
+  {%- endif -%}
+  <div class="hero__overlay"></div>
+
+  <div class="hero__container">
+    <div class="hero__content">
+      {%- if section.settings.overline != blank -%}
+        <span class="hero__overline">{{ section.settings.overline }}</span>
+      {%- endif -%}
+
+      {%- if section.settings.heading != blank -%}
+        <h1 class="hero__title">{{ section.settings.heading }}</h1>
+      {%- endif -%}
+
+      {%- if section.settings.subheading != blank -%}
+        <p class="hero__subtitle">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+
+      <div class="hero__actions">
+        {%- if section.settings.button_text != blank -%}
+          <a href="{{ section.settings.button_url }}" class="hero__btn hero__btn--primary">
+            {{ section.settings.button_text }}
+          </a>
+        {%- endif -%}
+
+        {%- if section.settings.button_2_text != blank -%}
+          <a href="{{ section.settings.button_2_url }}" class="hero__btn hero__btn--secondary">
+            {{ section.settings.button_2_text }}
+          </a>
+        {%- endif -%}
+      </div>
     </div>
-  </div>
-</div>
 
-<div class="highlights">
-  <div class="highlight">
-    <h3>Key Concepts</h3>
-    <p class="highlight-description">
-      Shopify themes are a package of template files, building blocks, and supporting assets. Use these building blocks
-      to create modular, customizable themes.
-    </p>
-    <p>{{ 'Learn more about key concepts' | link_to: 'https://shopify.dev/docs/storefronts/themes/architecture' }}</p>
+    {%- if section.settings.hero_image != blank -%}
+      <div class="hero__media">
+        {% render 'image', image: section.settings.hero_image, class: 'hero__media-img' %}
+      </div>
+    {%- endif -%}
   </div>
 
-  <div class="highlight">
-    <h3>Liquid</h3>
-    <p class="highlight-description">
-      The Liquid templating language is the backbone of Shopify themes, and is used to load dynamic content on
-      storefronts. Extend Liquid objects to store and present custom data using metafields.
-    </p>
-    <p>{{ 'View the Liquid reference' | link_to: 'https://shopify.dev/docs/api/liquid' }}</p>
-  </div>
-
-  <div class="highlight">
-    <h3>Best Practices</h3>
-    <p class="highlight-description">
-      To optimize your theme development experience, Shopify has established a set of best practices that you can refer
-      to when developing your theme and setting up your toolchains and processes.
-    </p>
-    <p>{{ 'Follow best practices' | link_to: 'https://shopify.dev/docs/storefronts/themes/best-practices' }}</p>
-  </div>
-</div>
+  {%- if section.blocks.size > 0 -%}
+    <div class="hero__features">
+      {%- for block in section.blocks -%}
+        <div class="hero__feature" {{ block.shopify_attributes }}>
+          {%- if block.settings.icon == 'code' -%}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          {%- elsif block.settings.icon == 'book' -%}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          {%- elsif block.settings.icon == 'star' -%}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          {%- elsif block.settings.icon == 'zap' -%}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          {%- elsif block.settings.icon == 'heart' -%}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          {%- else -%}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          {%- endif -%}
+          <div class="hero__feature-text">
+            <h3>{{ block.settings.title }}</h3>
+            {%- if block.settings.description != blank -%}
+              <p>{{ block.settings.description }}</p>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</section>
 
 {% stylesheet %}
-  .welcome {
-    display: grid;
-    grid-template-columns: var(--content-grid);
-    background-color: #f6f6f7;
-    padding: 72px 0;
+  .hero {
+    position: relative;
+    background-color: var(--color-brand-bg, #0d0d0d);
+    color: var(--color-brand-fg, #f5f0e8);
+    overflow: hidden;
   }
 
-  .welcome-content {
-    grid-column: 2;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero__bg-img {
     width: 100%;
-    padding: 0 24px;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.3;
   }
 
-  .welcome-description {
-    max-width: 80ch;
-    line-height: 1.4;
-    margin-top: 1.5rem;
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(13,13,13,0.6) 0%, rgba(13,13,13,0.95) 100%);
+    z-index: 1;
   }
 
-  .icon {
-    width: 300px;
-  }
-
-  .highlights {
+  .hero__container {
+    position: relative;
+    z-index: 2;
     display: grid;
-    gap: 2rem;
-    grid-template-columns: repeat(3, 1fr);
-    margin-top: 50px;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+    min-height: 520px;
   }
 
-  @media (max-width: 1100px) {
-    .highlights {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .highlight {
+  /* Content */
+  .hero__content {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    padding: 24px;
-    border-radius: 8px;
-    background-color: #eef3ff;
-    color: rgb(92, 95, 98);
-    line-height: 1.4;
+    gap: 1.25rem;
   }
 
-  .highlight > * + * {
-    margin-top: 1rem;
+  .hero__overline {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--color-brand-gold, #c9a84c);
+    font-weight: 600;
   }
 
-  .highlight h3 {
+  .hero__title {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .hero__subtitle {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
     font-size: 1rem;
-    color: rgb(32, 34, 35);
+    line-height: 1.7;
+    color: var(--color-brand-fg-muted, #a09888);
+    max-width: 500px;
   }
 
-  .highlight-description {
-    flex: 1 1;
-  }
-
-  .highlight a {
+  .hero__actions {
     display: flex;
-    width: fit-content;
-    background-color: rgb(250, 251, 251);
-    box-shadow: rgba(0, 0, 0, 0.2) 0px -3px 0px 0px inset, rgba(255, 255, 255, 0.9) 0px 2px 0px 0px inset;
-    border: 1px solid rgb(140, 145, 150);
-    border-radius: 4px;
-    color: rgb(92, 95, 98);
-    padding: 3px 10px 5px;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .hero__btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 32px;
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .hero__btn--primary {
+    background-color: var(--color-brand-gold, #c9a84c);
+    color: #0d0d0d;
+    border: none;
+  }
+
+  .hero__btn--primary:hover {
+    background-color: var(--color-brand-gold-hover, #d4b35a);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(201, 168, 76, 0.25);
+  }
+
+  .hero__btn--secondary {
+    background: transparent;
+    color: var(--color-brand-fg, #f5f0e8);
+    border: 1px solid #333;
+  }
+
+  .hero__btn--secondary:hover {
+    border-color: var(--color-brand-fg-muted, #a09888);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  /* Media */
+  .hero__media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero__media-img {
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Features */
+  .hero__features {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+  }
+
+  .hero__feature {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid #1a1a1a;
+    border-radius: 12px;
+    transition: border-color 0.3s ease;
+  }
+
+  .hero__feature:hover {
+    border-color: #2a2520;
+  }
+
+  .hero__feature svg {
+    color: var(--color-brand-gold, #c9a84c);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .hero__feature h3 {
+    font-family: var(--font-heading, "Fira Code", monospace);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-brand-fg, #f5f0e8);
+    margin-bottom: 0.35rem;
+  }
+
+  .hero__feature p {
+    font-family: var(--font-body, "JetBrains Mono", monospace);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: #666;
+  }
+
+  /* Mobile */
+  @media (max-width: 900px) {
+    .hero__container {
+      grid-template-columns: 1fr;
+      text-align: center;
+      padding: 3rem 1.25rem;
+      min-height: auto;
+    }
+
+    .hero__content {
+      align-items: center;
+    }
+
+    .hero__subtitle {
+      max-width: 100%;
+    }
+
+    .hero__actions {
+      justify-content: center;
+    }
+
+    .hero__media {
+      order: -1;
+    }
+
+    .hero__media-img {
+      max-width: 320px;
+    }
+
+    .hero__features {
+      padding: 0 1.25rem 3rem;
+    }
   }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "Hello World",
-  "settings": [],
+  "name": "Hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenido"
+    },
+    {
+      "type": "text",
+      "id": "overline",
+      "label": "Texto superior",
+      "default": "Lenguaje Programador"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "default": "La primera bitácora diseñada para programadores"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subtítulo",
+      "default": "Un espacio para documentar tu código, tus ideas y tu evolución como developer."
+    },
+    {
+      "type": "header",
+      "content": "Botón principal"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Texto del botón",
+      "default": "Ver la bitácora →"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "URL del botón"
+    },
+    {
+      "type": "header",
+      "content": "Botón secundario"
+    },
+    {
+      "type": "text",
+      "id": "button_2_text",
+      "label": "Texto del botón 2"
+    },
+    {
+      "type": "url",
+      "id": "button_2_url",
+      "label": "URL del botón 2"
+    },
+    {
+      "type": "header",
+      "content": "Imágenes"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Imagen principal"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Imagen de fondo"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature card",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Ícono",
+          "options": [
+            { "value": "code", "label": "Código" },
+            { "value": "book", "label": "Libro" },
+            { "value": "star", "label": "Estrella" },
+            { "value": "zap", "label": "Rayo" },
+            { "value": "heart", "label": "Corazón" },
+            { "value": "check", "label": "Check" }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Título",
+          "default": "Feature"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Descripción"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 4,
   "presets": [
     {
-      "name": "Hello World Template",
-      "category": "Demo"
+      "name": "Hero",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "code",
+            "title": "Hecha para devs",
+            "description": "Secciones diseñadas para pseudocódigo, diagramas y notas técnicas."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "book",
+            "title": "Diseño premium",
+            "description": "Tapa dura, papel de alta calidad y arte exclusivo."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "zap",
+            "title": "Edición limitada",
+            "description": "Solo unas pocas unidades disponibles. No se reimprime."
+          }
+        }
+      ]
     }
   ]
 }

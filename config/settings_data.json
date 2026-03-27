@@ -8,5 +8,17 @@
  * ------------------------------------------------------------
  */
 {
-  "current": {}
+  "current": {
+    "background_color": "#0d0d0d",
+    "background_color_alt": "#111111",
+    "foreground_color": "#f5f0e8",
+    "foreground_color_muted": "#a09888",
+    "brand_color": "#c9a84c",
+    "brand_color_hover": "#d4b35a",
+    "max_page_width": 1200,
+    "min_page_margin": 20,
+    "input_corner_radius": 8,
+    "heading_scale": 100,
+    "body_scale": 100
+  }
 }
